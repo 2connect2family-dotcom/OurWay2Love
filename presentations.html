@@ -79,8 +79,7 @@
 <div class="inner-page">
   <div class="inner-header"><span class="page-icon">📽️</span><h1>Presentations &amp; Slideshows</h1></div>
   <div class="inner-body">
-    <p style="color:#555;margin-bottom:1.5rem;font-size:1rem;line-height:1.7;">Share family presentations, slideshows, and videos here. Upload PowerPoint files or videos for the whole family to enjoy.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem;">
+    <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0 1.5rem;margin-bottom:2rem;align-items:start;">
       <div>
         <label style="font-size:0.82rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.5rem;">📊 PowerPoint / Presentations</label>
         <div class="editor-only upload-zone" onclick="document.getElementById('upl-ppt').click()" style="display:none;">
@@ -89,6 +88,8 @@
         </div>
         <div id="presentations-grid" style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.75rem;"></div>
       </div>
+      <!-- Vertical divider -->
+      <div style="background:rgba(26,26,26,0.18);width:1px;align-self:stretch;min-height:200px;margin-top:1.75rem;"></div>
       <div>
         <label style="font-size:0.82rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.5rem;">🎬 Videos</label>
         <div class="editor-only upload-zone" onclick="document.getElementById('upl-pres-vid').click()" style="display:none;">
@@ -236,75 +237,4 @@ function addPresentations(input) {
 }
 </script>
 
-<!-- ── Editor Lock Button ── -->
-<div id="editor-lock-btn" onclick="toggleEditorLogin()" title="Editor Login" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:linear-gradient(135deg,var(--green),var(--black));border:2px solid var(--gold);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.35);transition:transform 0.2s;" onmouseenter="this.style.transform='scale(1.12)'" onmouseleave="this.style.transform='scale(1)'">
-  <span id="lock-icon" style="font-size:1.3rem;">🔒</span>
-</div>
-
-<!-- ── Editor Login Modal ── -->
-<div id="editor-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
-  <div style="background:var(--cream);border:3px solid var(--gold);border-radius:14px;padding:2rem 2.5rem;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.4);text-align:center;">
-    <div style="font-size:2.5rem;margin-bottom:0.5rem;" id="modal-icon">🔒</div>
-    <h2 style="font-family:'Playfair Display',serif;color:var(--green);font-size:1.4rem;margin-bottom:0.25rem;" id="modal-title">Editor Login</h2>
-    <p style="color:#666;font-size:0.9rem;margin-bottom:1.25rem;" id="modal-desc">Enter the editor password to enable uploads.</p>
-    <input id="editor-password-input" type="password" placeholder="Enter editor password..." style="width:100%;border:1.5px solid var(--gold-light);border-radius:8px;padding:0.6rem 0.75rem;font-size:1rem;font-family:'Lato',sans-serif;background:white;margin-bottom:0.75rem;" onkeydown="if(event.key==='Enter')submitEditorLogin()">
-    <div id="editor-error" style="color:#c00;font-size:0.85rem;margin-bottom:0.5rem;display:none;">❌ Incorrect password. Please try again.</div>
-    <div style="display:flex;gap:0.75rem;justify-content:center;">
-      <button onclick="submitEditorLogin()" style="background:var(--green);color:white;border:none;border-radius:8px;padding:0.6rem 1.4rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Unlock</button>
-      <button onclick="closeEditorModal()" style="background:var(--cream);color:var(--black);border:2px solid var(--gold-light);border-radius:8px;padding:0.6rem 1.2rem;font-size:1rem;cursor:pointer;font-family:'Lato',sans-serif;">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-const EDITOR_PASSWORD_HASH = 'family2024';
-let editorMode = false;
-function hashMatch(input) { return input === EDITOR_PASSWORD_HASH; }
-
-function applyEditorMode(active) {
-  editorMode = active;
-  document.querySelectorAll('.editor-only').forEach(el => {
-    el.style.display = active ? '' : 'none';
-  });
-  document.getElementById('lock-icon').textContent = active ? '🔓' : '🔒';
-  document.getElementById('editor-lock-btn').style.borderColor = active ? '#4A7C2A' : 'var(--gold)';
-  sessionStorage.setItem('editorMode', active ? '1' : '0');
-}
-
-function toggleEditorLogin() {
-  if (editorMode) {
-    applyEditorMode(false);
-    showLockConfirm();
-  } else {
-    document.getElementById('editor-modal').style.display = 'flex';
-    document.getElementById('editor-password-input').value = '';
-    document.getElementById('editor-error').style.display = 'none';
-    setTimeout(() => document.getElementById('editor-password-input').focus(), 100);
-  }
-}
-
-function submitEditorLogin() {
-  const val = document.getElementById('editor-password-input').value;
-  if (hashMatch(val)) {
-    document.getElementById('editor-modal').style.display = 'none';
-    applyEditorMode(true);
-  } else {
-    document.getElementById('editor-error').style.display = 'block';
-    document.getElementById('editor-password-input').value = '';
-    document.getElementById('editor-password-input').focus();
-  }
-}
-
-function closeEditorModal() { document.getElementById('editor-modal').style.display = 'none'; }
-
-function showLockConfirm() {
-  const btn = document.getElementById('editor-lock-btn');
-  btn.innerHTML = '<span style="font-size:0.7rem;color:var(--gold-light);font-weight:700;">Locked</span>';
-  setTimeout(() => { btn.innerHTML = '<span id="lock-icon">🔒</span>'; }, 1500);
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  applyEditorMode(false);
-  if (sessionStorage.getItem('editorMode') === '1') applyEditorMode(true);
-});
-</script>
 </body></html>
