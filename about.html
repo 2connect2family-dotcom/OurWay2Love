@@ -105,7 +105,22 @@ window.addEventListener('DOMContentLoaded', () => {
   function autoScroll() {
     if (!scrolling) return;
     if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
+      // Pause briefly, then scroll back to "Our Story" and restart
       scrolling = false;
+      setTimeout(() => {
+        const header = document.querySelector('.inner-header h1');
+        if (header) {
+          header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        // Give smooth scroll time to finish before restarting
+        setTimeout(() => {
+          accum = 0;
+          scrolling = true;
+          requestAnimationFrame(autoScroll);
+        }, 5000);
+      }, 5000);
       return;
     }
     accum += speed;
