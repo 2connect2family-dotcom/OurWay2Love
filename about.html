@@ -132,11 +132,20 @@ window.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(autoScroll);
   }
 
-  // Pause on any user interaction
-  document.addEventListener('mousedown', () => { scrolling = false; });
-  document.addEventListener('touchstart', () => { scrolling = false; });
-  document.addEventListener('wheel',     () => { scrolling = false; });
-  document.addEventListener('keydown',   () => { scrolling = false; });
+  // First interaction pauses; a second interaction resumes
+  let paused = false;
+  function handleInteraction() {
+    if (!paused) {
+      scrolling = false;
+      paused = true;
+    } else {
+      paused = false;
+      scrolling = true;
+      requestAnimationFrame(autoScroll);
+    }
+  }
+  document.addEventListener('mousedown', handleInteraction);
+  document.addEventListener('touchstart', handleInteraction);
 
   // Small delay before starting so the page renders fully
   setTimeout(() => {
